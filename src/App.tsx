@@ -4,6 +4,7 @@ import Logo from "./components/Logo";
 
 import "./styles/theme.css";
 import "./styles/global.css";
+import Menu from "./components/Menu";
 
 const App = () => {
   return (
@@ -11,12 +12,15 @@ const App = () => {
       <Container>
         <Logo />
       </Container>
+
       <Container>
-        <Heading>MENU</Heading>
+        <Menu />
       </Container>
+
       <Container>
         <Heading>FORM</Heading>
       </Container>
+
       <Container>
         <Heading>FOOTER</Heading>
       </Container>
