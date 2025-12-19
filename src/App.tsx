@@ -25,7 +25,12 @@ const App = () => {
       <Container>
         <form className="form" action="">
           <div className="formRow">
-            <DefaultInput type="text" id="meuInput" />
+            <DefaultInput
+              labelText="task"
+              type="text"
+              id="meuInput"
+              placeholder="Digite aqui..."
+            />
           </div>
 
           <div className="formRow">
