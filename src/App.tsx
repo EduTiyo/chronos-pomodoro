@@ -6,6 +6,7 @@ import "./styles/global.css";
 import Menu from "./components/Menu";
 import CountDown from "./components/CountDown";
 import DefaultInput from "./components/DefaultInput";
+import Cycles from "./components/Cycles";
 
 const App = () => {
   return (
@@ -38,8 +39,7 @@ const App = () => {
           </div>
 
           <div className="formRow">
-            <p>Ciclos</p>
-            <p>0 0 0 0 0 0 0 0</p>
+            <Cycles />
           </div>
 
           <div className="formRow">
