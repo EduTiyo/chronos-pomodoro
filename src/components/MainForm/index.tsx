@@ -1,5 +1,5 @@
 import { PlayCircleIcon } from "lucide-react";
-import Cycles from "../Cycles";
+
 import DefaultButton from "../DefaultButton";
 import DefaultInput from "../DefaultInput";
 import { useRef } from "react";
@@ -8,6 +8,7 @@ import { useTaskContext } from "../../contexts/TaskContext";
 import { getNextCycle } from "../../utils/getNextCycle";
 import { getNextCycleType } from "../../utils/getNextCycleType";
 import { formatSecondsToMinutes } from "../../utils/formatSecondsToMinutes";
+import Cycles from "../Cycles";
 
 const MainForm = () => {
   const { state, setState } = useTaskContext();
@@ -68,13 +69,14 @@ const MainForm = () => {
         <p>Lorem ipsum dolor sit amet.</p>
       </div>
 
-      <div className="formRow">
-        <Cycles />
-      </div>
+      {state.currentCycle > 0 && (
+        <div className="formRow">
+          <Cycles />
+        </div>
+      )}
 
       <div className="formRow">
         <DefaultButton icon={<PlayCircleIcon />} />
-        <DefaultButton icon={<PlayCircleIcon />} color="red" />
       </div>
     </form>
   );
