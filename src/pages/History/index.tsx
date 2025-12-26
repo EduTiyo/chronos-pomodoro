@@ -10,10 +10,11 @@ import { formatDate } from "../../utils/formatDate";
 import { getTaskStatus } from "../../utils/getTaskStatus";
 import { showMessage } from "../../adapters/showMessage";
 import { type SortTaskOptions, sortTasks } from "../../utils/sortTasks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { TaskActionTypes } from "../../contexts/TaskContext/taskActions";
 
 const History = () => {
-  const { state } = useTaskContext();
+  const { state, dispatch } = useTaskContext();
   const hasTask = state.tasks.length > 0;
 
   const [sortTaskOptions, setSortTaskOptions] = useState<SortTaskOptions>(
@@ -25,6 +26,17 @@ const History = () => {
       };
     },
   );
+
+  useEffect(() => {
+    setSortTaskOptions(prev => ({
+      ...prev,
+      tasks: sortTasks({
+        tasks: state.tasks,
+        direction: prev.direction,
+        field: prev.field,
+      }),
+    }));
+  }, [state.tasks]);
 
   const handleSortTasks = ({ field }: Pick<SortTaskOptions, "field">) => {
     const newDirection = sortTaskOptions.direction === "desc" ? "asc" : "desc";
@@ -41,8 +53,16 @@ const History = () => {
   };
 
   const handleClearAllHistoric = () => {
-    localStorage.clear();
-    showMessage.success("Histórico apagado com sucesso");
+    if (!confirm("Tem certeza que deseja apagar todo o histórico de tarefas?"))
+      return;
+
+    try {
+      dispatch({ type: TaskActionTypes.RESET_TASK });
+      showMessage.success("Histórico excluído com sucesso");
+    } catch (error) {
+      console.error(error);
+      showMessage.error("Erro ao deletar histórico");
+    }
   };
 
   return (
@@ -50,21 +70,27 @@ const History = () => {
       <MainTemplate>
         <Container>
           <Heading>
-            <span>History</span>
-            <span className={styles.buttonContainer}>
-              <DefaultButton
-                icon={<TrashIcon />}
-                color="red"
-                aria-label="Apagar todo o histórico"
-                title="Apagar histórico"
-                onClick={handleClearAllHistoric}
-              />
-            </span>
+            <span>Histórico</span>
+            {hasTask && (
+              <span className={styles.buttonContainer}>
+                <DefaultButton
+                  icon={<TrashIcon />}
+                  color="red"
+                  aria-label="Apagar todo o histórico"
+                  title="Apagar histórico"
+                  onClick={handleClearAllHistoric}
+                />
+              </span>
+            )}
           </Heading>
         </Container>
 
         <Container>
-          {!hasTask && <span>Ainda não há tarefas registradas.</span>}
+          {!hasTask && (
+            <p style={{ textAlign: "center" }}>
+              Ainda não há tarefas registradas.
+            </p>
+          )}
           {hasTask && (
             <div className={styles.responsiveTable}>
               <table>
