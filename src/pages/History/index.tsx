@@ -5,8 +5,13 @@ import DefaultButton from "../../components/DefaultButton";
 import { TrashIcon } from "lucide-react";
 
 import styles from "./styles.module.css";
+import { useTaskContext } from "../../contexts/TaskContext";
+import { formatDate } from "../../utils/formatDate";
 
 const History = () => {
+  const { state } = useTaskContext();
+  const hasTask = state.tasks.length > 0;
+
   return (
     <MainTemplate>
       <Container>
@@ -24,33 +29,36 @@ const History = () => {
       </Container>
 
       <Container>
-        <div className={styles.responsiveTable}>
-          <table>
-            <thead>
-              <tr>
-                <th>Tarefa</th>
-                <th>Duração</th>
-                <th>Data</th>
-                <th>Status</th>
-                <th>Tipo</th>
-              </tr>
-            </thead>
+        {!hasTask && <span>Ainda não há tarefas registradas.</span>}
+        {hasTask && (
+          <div className={styles.responsiveTable}>
+            <table>
+              <thead>
+                <tr>
+                  <th>Tarefa</th>
+                  <th>Duração</th>
+                  <th>Data</th>
+                  <th>Status</th>
+                  <th>Tipo</th>
+                </tr>
+              </thead>
 
-            <tbody>
-              {Array.from({ length: 20 }).map((_, idx) => {
-                return (
-                  <tr key={idx}>
-                    <td>Estudar</td>
-                    <td>25m</td>
-                    <td>25/12/2025 19:30</td>
-                    <td>Completa</td>
-                    <td>Foco</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+              <tbody>
+                {state.tasks.map(task => {
+                  return (
+                    <tr key={task.id}>
+                      <td>{task.name}</td>
+                      <td>{task.durationInMinutes}</td>
+                      <td>{formatDate(task.startDate)}</td>
+                      <td>{task.interruptDate}</td>
+                      <td>{task.type}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Container>
     </MainTemplate>
   );
