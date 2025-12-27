@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { TaskActionTypes } from "../../contexts/TaskContext/taskActions";
 
 const History = () => {
+  const [confirmClearHistoric, setConfirmClearHistoric] = useState(false);
   const { state, dispatch } = useTaskContext();
   const hasTask = state.tasks.length > 0;
 
@@ -38,6 +39,19 @@ const History = () => {
     }));
   }, [state.tasks]);
 
+  useEffect(() => {
+    if (!confirmClearHistoric) return;
+    setConfirmClearHistoric(false);
+
+    try {
+      dispatch({ type: TaskActionTypes.RESET_TASK });
+      showMessage.success("Histórico excluído com sucesso");
+    } catch (error) {
+      console.error(error);
+      showMessage.error("Erro ao deletar histórico");
+    }
+  }, [confirmClearHistoric]);
+
   const handleSortTasks = ({ field }: Pick<SortTaskOptions, "field">) => {
     const newDirection = sortTaskOptions.direction === "desc" ? "asc" : "desc";
 
@@ -53,16 +67,12 @@ const History = () => {
   };
 
   const handleClearAllHistoric = () => {
-    if (!confirm("Tem certeza que deseja apagar todo o histórico de tarefas?"))
-      return;
-
-    try {
-      dispatch({ type: TaskActionTypes.RESET_TASK });
-      showMessage.success("Histórico excluído com sucesso");
-    } catch (error) {
-      console.error(error);
-      showMessage.error("Erro ao deletar histórico");
-    }
+    showMessage.confirm(
+      "Tem certeza que deseja apagar todo o histórico?",
+      confirmation => {
+        setConfirmClearHistoric(confirmation);
+      },
+    );
   };
 
   return (
