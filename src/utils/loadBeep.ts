@@ -5,7 +5,6 @@ export function loadBeep() {
   audio.load();
 
   return () => {
-    const currentTime = 0;
     audio.play().catch(error => console.log("Erro ao tocar áudio.", error));
   };
 }
